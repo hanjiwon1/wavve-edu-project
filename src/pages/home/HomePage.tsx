@@ -48,9 +48,13 @@ export const TodoItem = (props: TodoItemProps) => {
   return (
     <>
       <div className="flex gap-32px">
-          <button onClick={() => onRemoveItem(props.id)}>remove</button>
+        <button onClick={() => onRemoveItem(props.id)}>remove</button>
         <div className="flex gap-8px ">
-          <input checked={isDone} type="checkbox" onChange={() => onToggleDone(props.id)}/>
+          <input
+            checked={isDone}
+            type="checkbox"
+            onChange={() => onToggleDone(props.id)}
+          />
           <span className={isDone ? 'line-through' : ''}>{message}</span>
         </div>
       </div>
@@ -62,8 +66,7 @@ export const DoneItem = (props: TodoItemProps) => {
   const {onToggleDone, isDone, message, onRemoveItem} = props
   return (
     <>
-      {
-        isDone &&
+      {isDone && (
         <div className="flex gap-16px">
           <div className="flex gap-8px w-[180px] justify-between">
             <button onClick={() => onToggleDone(props.id)}>remove</button>
@@ -71,11 +74,10 @@ export const DoneItem = (props: TodoItemProps) => {
             <button onClick={() => onRemoveItem(props.id)}>remove</button>
           </div>
         </div>
-      }
+      )}
     </>
   )
 }
-
 
 export interface TodoAddItemProps {
   onAddItem: (message: string) => void
@@ -136,19 +138,18 @@ export const HomePage = () => {
       {id: 3, message: 'Cherry'},
     ],
   )
-  let idCounter = useRef(list.length)
   const [doneMap, setDoneMap] = useState<Record<string | number, boolean>>(
     getStorage('doneMap') ?? {},
   )
   const onAddItem = (message: string) => {
-    idCounter.current += 1
-    setList((value:any) => [...value, {id: idCounter.current, message}])
+    const maxId = list.reduce((max: any, item: any) => Math.max(max, item.id), 0)
+    setList((value: any) => [...value, {id: maxId + 1, message}])
   }
   const onToggleDone = (id: string | number) => {
     setDoneMap((value) => ({...value, [id]: !value[id]}))
   }
   const onRemoveItem = (id: number | string) => {
-    const index = list.findIndex((item:any) => item.id === id)
+    const index = list.findIndex((item: any) => item.id === id)
     if (index !== -1) {
       const newList = [...list.slice(0, index), ...list.slice(index + 1)]
       setList(newList)
